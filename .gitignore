@@ -1,0 +1,4 @@
+.ropeproject/
+*.egg-info/
+__pycache__
+.python-version
