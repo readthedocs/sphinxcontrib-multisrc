@@ -1,4 +1,5 @@
 # -*- coding: utf-8 -*-
+
 """Sphinx multiple source path support."""
 
 __version_info__ = (1, 0, 0)
@@ -22,7 +23,7 @@ def create_fallback_envs_for_app(app):
     :param app: Base Sphinx application
     """
     # This code is copied from the Sphinx application instantiation
-    for path in app.config.multi_paths:
+    for path in app.config.multisrc_paths:
         env = BuildEnvironment()
         env.app = app
         env.doctreedir = app.doctreedir
@@ -84,10 +85,9 @@ def patch_doc2path(env, fallback_envs):
         path = override_doc2path(docname, base, suffix)
         if not os.path.exists(path):
             for fallback_env in fallback_envs:
-                # This doesn't work because some chump put in some asserts to
-                # test that the path starts with our srcdir, which it does not.
-                # So let's make it!
-                #path = fallback_env.doc2path(docname, base, suffix)
+                # Force our base env path name in front of the path, as a
+                # relative path, so that it can pass some asserts that check for
+                # the ``env.srcdir`` at the beginning of the path name
                 fallback_path = fallback_env.doc2path(docname, base, suffix)
                 if os.path.exists(fallback_path):
                     path = os.path.join(
@@ -105,7 +105,7 @@ def patch_doc2path(env, fallback_envs):
 
 def render_jinja(app, docname, source):
     """Perform Jinja transform on source on read."""
-    env = Environment(loader=FileSystemLoader(app.config.multi_paths),)
+    env = Environment(loader=FileSystemLoader(app.config.multisrc_paths),)
     template = env.from_string(source[0])
     source[0] = template.render(app.config.html_context)
 
@@ -113,7 +113,7 @@ def render_jinja(app, docname, source):
 def setup(app):
     app.connect('builder-inited', builder_inited)
     app.connect('source-read', render_jinja)
-    app.add_config_value('multi_paths', ['.'], 'env')
+    app.add_config_value('multisrc_paths', ['.'], 'env')
     return {
         'version': __version__,
     }

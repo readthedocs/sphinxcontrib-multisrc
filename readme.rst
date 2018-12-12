@@ -1,5 +1,5 @@
-sphinxcontrib-multipath
-=======================
+sphinxcontrib-multisrc
+======================
 
 This extension gives Sphinx a fallback path so that a common source pattern can
 be used to author documentation. In addition to falling back to the common
@@ -13,10 +13,10 @@ Multiple source paths can be configured using an option in your configuration::
 
     extensions = [
         ...
-        'sphinxcontrib.multipath',
+        'sphinxcontrib.multisrc',
     ]
 
-    multipaths = [
+    multisrc_paths = [
         '../submodule/docs',
         '.',
     ]

@@ -1,5 +1,5 @@
 """
-Sphinx multipath support
+Sphinx multiple source path support
 """
 
 from setuptools import setup
