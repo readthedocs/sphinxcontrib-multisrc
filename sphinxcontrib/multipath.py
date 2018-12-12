@@ -1,21 +1,19 @@
-"""
-Sphinx multiple source path support
-"""
+# -*- coding: utf-8 -*-
+"""Sphinx multiple source path support."""
 
 __version_info__ = (1, 0, 0)
 __version__ = '1.0.0'
 
-
 import os
 import types
 
-from jinja2  import Environment, FileSystemLoader
+from jinja2 import Environment, FileSystemLoader
 from sphinx.environment import BuildEnvironment
 
 
 def create_fallback_envs_for_app(app):
     """
-    Create additional envs for separate source paths
+    Create additional envs for separate source paths.
 
     Additional environments are created in order to find files and translate
     docnames to paths. Additional environments are the cleanest method to
@@ -39,7 +37,7 @@ def create_fallback_envs_for_app(app):
 
 
 def builder_inited(app):
-    """Event listener to set up multiple environments"""
+    """Event listener to set up multiple environments."""
     fallback_envs = list(create_fallback_envs_for_app(app))
     patch_find_files(app.env, fallback_envs)
     patch_doc2path(app.env, fallback_envs)
@@ -47,7 +45,7 @@ def builder_inited(app):
 
 def patch_find_files(env, fallback_envs):
     """
-    Patches the base environment ``find_files`` to support multiple paths
+    Patches the base environment ``find_files`` to support multiple paths.
 
     The patched function uses each environments ``find_files`` to create a
     complete list of all of the docnames found across the environments.
@@ -70,7 +68,7 @@ def patch_find_files(env, fallback_envs):
 
 def patch_doc2path(env, fallback_envs):
     """
-    Patches the base environment ``doc2path`` to support multiple paths
+    Patches the base environment ``doc2path`` to support multiple paths.
 
     The patched function uses each environments ``doc2path`` until it finds a
     file that exists for the docname.
@@ -97,7 +95,7 @@ def patch_doc2path(env, fallback_envs):
                         os.path.relpath(
                             fallback_path,
                             env.srcdir,
-                        )
+                        ),
                     )
                     break
         return path
@@ -106,10 +104,8 @@ def patch_doc2path(env, fallback_envs):
 
 
 def render_jinja(app, docname, source):
-    """Perform Jinja transform on source on read"""
-    env = Environment(
-        loader=FileSystemLoader(app.config.multi_paths),
-    )
+    """Perform Jinja transform on source on read."""
+    env = Environment(loader=FileSystemLoader(app.config.multi_paths),)
     template = env.from_string(source[0])
     source[0] = template.render(app.config.html_context)
 
